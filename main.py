@@ -159,7 +159,6 @@ def take_break(_):
     break_button.grid_forget()
     reset_button.grid_forget()
     button.configure(text="End break early")
-    # titleL.configure(text="Time left:")
 
 def resume_from_break_early():
     global state
@@ -245,17 +244,12 @@ def reset_timer(_):
 
 timeFrame = tkinter.Frame(master=frame, width = 200, height = 200)
 timeFrame.pack()
-titleL = tkinter.Label(timeFrame, text="Keep going!", font=("Abeezee",36),width=12,height=2)
-#titleL.grid(row=0,column=0)
 
 timerL = tkinter.Label(timeFrame, text=pretty_time(timer), font=("Abeezee",66),width=8,pady=10)
 timerL.grid(row = 1,column=0)
 
 motivationalL = tkinter.Label(timeFrame,text="",font=("Abeezee",18), fg="green",height=0,pady=10)
 motivationalL.grid(row = 2,column=0)
-
-longBreakTimeL = tkinter.Label(timeFrame,text="",font=("Abeezee",18), fg="green",height=0,pady=10)
-# longBreakTimeL.grid(row = 3,column=0)
 
 buttons_frame =tkinter.Frame(master= frame,width = 200,height=20)
 buttons_frame.pack()
