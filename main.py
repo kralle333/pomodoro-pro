@@ -146,7 +146,7 @@ def take_break(_):
         motivationalL.configure(text =f'Enjoy long break!')
     else:
         if state == "overtime": # add normal break length + over time
-            timer = timer + break_length_seconds
+            timer = timer/pomodoro_length_seconds + break_length_seconds
         elif state == "running": # early break
             time_spent = pomodoro_length_seconds-timer
             print(f'time spent {time_spent}')
