@@ -57,6 +57,7 @@ motivational_time_seconds = save_data["motivational_time_seconds"]
 time_for_break_sound  = save_data["time_for_break_sound"]
 breaks_over_sound = save_data["breaks_over_sound"]
 notification_icon = save_data["notification_icon"]
+timer = pomodoro_length_seconds
 
 
 
@@ -149,7 +150,7 @@ def take_break(_):
             timer = timer/pomodoro_length_seconds + break_length_seconds
         elif state == "running": # early break
             time_spent = pomodoro_length_seconds-timer
-            print(f'time spent {time_spent}')
+            #print(f'time spent {time_spent}')
             timer = (time_spent/pomodoro_length_seconds)*break_length_seconds
         motivationalL.configure(text =f'Enjoy short break!')
     
