@@ -14,3 +14,6 @@ Made for my girlfriend who wanted a more configurable pomodoro timer.
 - Sound played when time for break and break's over
 - Notifications!
 
+## Usage
+- To run: `python main.py`
+- To configure: edit settings.json
