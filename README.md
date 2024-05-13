@@ -15,5 +15,5 @@ Made for my girlfriend who wanted a more configurable pomodoro timer.
 - Notifications!
 
 ## Usage
-To run: `python main.py`
-To configure: edit settings.json
+- To run: `python main.py`
+- To configure: edit settings.json
