@@ -23,7 +23,7 @@ motivational_stuff = []
 breaks_needed_for_long_break = 4
 long_break_multiplier = 0.15
 motivational_time_seconds = 60
-
+length_of_break = 0
 
 state = "ready_to_start"
 motivational_stuff_index = -1
@@ -59,8 +59,6 @@ breaks_over_sound = save_data["breaks_over_sound"]
 notification_icon = save_data["notification_icon"]
 
 
-def calculate_break_size():
-    return break_length_seconds*(timer/pomodoro_length_seconds)
 
 def pretty_time(seconds):
     if(seconds < 60):
@@ -97,7 +95,7 @@ def set_ui_state(new_state):
         motivationalL.configure(text="")
         timerL.configure(text=pretty_time(timer))
         break_button.grid_forget()
-        set_motivational()
+        reset_button.grid_forget()
     if new_state == "running":
         timerL.configure(fg='white')
         timerL.configure(text=pretty_time(timer))
@@ -133,12 +131,12 @@ def toggle_timer(_):
         set_ui_state(state)
 
 def take_break(_):
-    
     global timer
     global state
     global break_button
     global total_pomodoro_time_used
     global breaks_taken
+    global length_of_break
 
     breaks_taken += 1
     if breaks_taken == breaks_needed_for_long_break:
@@ -147,10 +145,17 @@ def take_break(_):
         total_pomodoro_time_used = 0
         motivationalL.configure(text =f'Enjoy long break!')
     else:
-        timer = calculate_break_size()
+        if state == "overtime": # add normal break length + over time
+            timer = timer + break_length_seconds
+        elif state == "running": # early break
+            time_spent = pomodoro_length_seconds-timer
+            print(f'time spent {time_spent}')
+            timer = (time_spent/pomodoro_length_seconds)*break_length_seconds
         motivationalL.configure(text =f'Enjoy short break!')
+    
+    length_of_break=timer
     state = "break"
-    timerL.configure(fg="white")
+    timerL.configure(text= pretty_time(timer) ,fg="white")
     break_button.grid_forget()
     reset_button.grid_forget()
     button.configure(text="End break early")
@@ -158,14 +163,18 @@ def take_break(_):
 
 def resume_from_break_early():
     global state
-    
     global timer
     if state != "break":
         return
     
     state = "running"
-    fractionUsed=timer/break_length_seconds
-    timer = (fractionUsed)*pomodoro_length_seconds
+    timeSpentInBreak = length_of_break-timer
+    #print(f'time spent in break: {timeSpentInBreak}')
+    fractionsOfBreaks = timeSpentInBreak/break_length_seconds
+    #print(f'franctions of breaks {fractionsOfBreaks}')
+    toPomoTime = fractionsOfBreaks*pomodoro_length_seconds
+    #print(f'to Pomo Time {toPomoTime}')
+    timer = pomodoro_length_seconds - toPomoTime
     timerL.configure(text=pretty_time(timer))
     break_button.grid(row = 0,column=2, padx=10,pady=10)
     break_button.configure(text="Take early break", bg ="orange")
@@ -195,6 +204,7 @@ def update_timer():
             notification = Notify()
             notification.title = "Time's up!"
             notification.message = "Take your short break" if breaks_taken+1 % breaks_needed_for_long_break != 0 else "Take your long break"
+            notification.icon= notification_icon
             notification.send()
 
             motivationalL.configure(text= "bonus time")
@@ -217,6 +227,7 @@ def update_timer():
             notification = Notify()
             notification.title = "Break's over!"
             notification.message = "Get ready for next 🍅"
+            notification.icon= notification_icon
             notification.send()
 
             set_ui_state(state)
