@@ -1,0 +1,17 @@
+{
+  "pomodoro_length_seconds": 1500,
+  "break_length_seconds": 300.0,
+  "long_break_multiplier": 0.15,
+  "breaks_needed_for_long_break": 4,
+  "motivational_stuff": [
+    "You can do it!",
+    "Keep going",
+    "U bravo",
+    "\ud83c\udf45",
+    "Time to focus!"
+  ],
+  "motivational_time_seconds": 60,
+  "time_for_break_sound": "meow.mp3",
+  "breaks_over_sound": "ring.mp3",
+  "notification_icon": "tomato.png"
+}
