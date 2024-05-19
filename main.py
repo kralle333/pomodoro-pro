@@ -60,19 +60,16 @@ notification_icon = save_data["notification_icon"]
 timer = pomodoro_length_seconds
 
 
-
 def pretty_time(seconds):
     if(seconds < 60):
         return f'{int(seconds)}s'
     if(seconds < 60*60):
-        seconds_left = seconds % 60
-        minutes = seconds // 60  
-        return f'{int(minutes)}m {int(seconds_left)}s'
+        minutes, seconds = divmod(seconds, 60)
+        return f'{int(minutes)}m {int(seconds)}s'
     if (seconds < 60*60*24):
-        seconds_left = seconds % 60
-        minutes_left = int((seconds % 3600) / 60)
-        hours =  int((seconds) / 3600)
-        return f'{int(hours)}h {int(minutes_left)}m {int(seconds_left)}s'   
+        minutes, seconds = divmod(seconds, 60)
+        hours, minutes = divmod(minutes, 60)
+        return f'{int(hours)}h {int(minutes)}m {int(seconds)}s'   
     return ""
 
 def set_motivational():
@@ -85,23 +82,27 @@ def set_motivational():
     motivational_stuff_index = new_index
     motivationalL.configure(text=new_quote)
 
+def show_running_buttons(show):
+    if show:
+        break_button.grid(row = 0,column=2, padx=10,pady=10)
+        reset_button.grid(row=0,column=1, padx=10,pady=10)
+    else:
+        break_button.grid_forget()
+        reset_button.grid_forget()
+
 def set_ui_state(new_state):
     if new_state == "breaks_over":
         timerL.configure(text="Time's up!")
-        # timerL.configure(text="")
         motivationalL.configure(text="")
         button.configure(text="Start 🍅")
     if new_state == "ready_to_start":
         button.configure(text="Start 🍅")
         motivationalL.configure(text="")
         timerL.configure(text=pretty_time(timer))
-        break_button.grid_forget()
-        reset_button.grid_forget()
     if new_state == "running":
         timerL.configure(fg='white')
         timerL.configure(text=pretty_time(timer))
-        break_button.grid(row = 0,column=2, padx=10,pady=10)
-        reset_button.grid(row=0,column=1, padx=10,pady=10)
+        show_running_buttons(True)
         motivationalL.configure(text =f'')
         button.configure(text="Pause")
         set_motivational()
@@ -150,15 +151,14 @@ def take_break(_):
             timer = timer/pomodoro_length_seconds + break_length_seconds
         elif state == "running": # early break
             time_spent = pomodoro_length_seconds-timer
-            #print(f'time spent {time_spent}')
+            # print(f'time spent {time_spent}')
             timer = (time_spent/pomodoro_length_seconds)*break_length_seconds
         motivationalL.configure(text =f'Enjoy short break!')
     
     length_of_break=timer
     state = "break"
     timerL.configure(text= pretty_time(timer) ,fg="white")
-    break_button.grid_forget()
-    reset_button.grid_forget()
+    show_running_buttons(False) 
     button.configure(text="End break early")
 
 def resume_from_break_early():
@@ -176,9 +176,8 @@ def resume_from_break_early():
     #print(f'to Pomo Time {toPomoTime}')
     timer = pomodoro_length_seconds - toPomoTime
     timerL.configure(text=pretty_time(timer))
-    break_button.grid(row = 0,column=2, padx=10,pady=10)
+    show_running_buttons(True)
     break_button.configure(text="Take early break", bg ="orange")
-    reset_button.grid(row = 0,column=1, padx=10,pady=10)
     button.configure(text="Pause")
     set_motivational()
     motivationalL.configure(text =f'')
@@ -260,11 +259,9 @@ button.grid(row=0, column=0,padx=10,pady=10)
 
 break_button = tkinter.Button(buttons_frame,text="Take early break", bg="orange")
 break_button.bind("<Button-1>",take_break)
-# break_button.grid(row=0,column=2, padx=10,pady=10)
 
 reset_button = tkinter.Button(buttons_frame,text="Reset")
 reset_button.bind("<Button-1>",reset_timer)
-# reset_button.grid(row=0,column=1, padx=10,pady=10)
 
  ### END SETUP UI
 
