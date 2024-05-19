@@ -15,5 +15,6 @@ Made for my girlfriend who wanted a more configurable pomodoro timer.
 - Notifications!
 
 ## Usage
+- install dependencies `pip install -r requirements.txt`
 - To run: `python main.py`
 - To configure: edit settings.json
